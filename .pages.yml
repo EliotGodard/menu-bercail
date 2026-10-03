@@ -1,0 +1,122 @@
+# Pages CMS configuration (https://pagescms.org)
+# Edits the menu content in menu.json. Section positions and the artwork are
+# fixed: long additions may overflow a panel, so check the site after saving.
+
+components:
+  items:
+    label: Articles
+    type: object
+    list:
+      collapsible:
+        collapsed: true
+        summary: "{name}"
+    fields:
+      - name: name
+        label: Nom
+        type: string
+        required: true
+      - name: note
+        label: Précision
+        type: string
+        description: Texte plus fin après le nom (ex. le domaine d'un vin).
+      - name: prices
+        label: Prix
+        type: string
+        list: true
+        description: Un prix par colonne, dans l'ordre (ex. 25cl, 50cl, pichet).
+      - name: details
+        label: Sous-lignes
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        description: Lignes en retrait sous l'article (parfums, variétés…).
+        fields:
+          - name: name
+            label: Texte
+            type: string
+            required: true
+          - name: prices
+            label: Prix
+            type: string
+            list: true
+
+content:
+  - name: menu
+    label: Menu
+    type: file
+    path: menu.json
+    format: json
+    fields:
+      - name: bieres
+        label: Bières et cidres
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - name: columns
+            label: Colonnes de prix
+            type: string
+            list: true
+          - { name: items, component: items }
+
+      - name: sans-alcool
+        label: Sans alcool
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - { name: items, component: items }
+
+      - name: cafes
+        label: Cafés
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - { name: items, component: items }
+
+      - name: vins
+        label: Vins
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - name: items
+            component: items
+            description: Deux prix par vin, verre puis pichet.
+
+      - name: cocktails
+        label: Cocktails et Mocktails
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - { name: items, component: items }
+
+      - name: petit-creux
+        label: Un petit creux ?
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - { name: items, component: items }
+
+      - name: pizzas
+        label: Pizzas
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - { name: items, component: items }
+
+      - name: glaces
+        label: Glaces artisanales
+        type: object
+        fields:
+          - { name: title, label: Titre, type: string, readonly: true }
+          - { name: items, component: items }
+          - { name: footnote, label: Note de bas de panneau, type: string }
+
+      - name: infos
+        label: Encart infos
+        type: object
+        fields:
+          - { name: tagline, label: Slogan (une ligne par entrée), type: string, list: true }
+          - { name: callout, label: Bandeau (une ligne par entrée), type: string, list: true }
+          - { name: social, label: Réseaux (une ligne par entrée), type: string, list: true }
+          - { name: handle, label: Compte, type: string }

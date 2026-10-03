@@ -165,7 +165,7 @@
       const box = document.getElementById(id);
       if (!box) return;
       box.append(el('h2', 'visually-hidden', data.title));
-      if (data.columns) {
+      if (data.columns && data.columns.length) {
         const head = el('div', 'head');
         head.append(el('span'));
         for (const c of data.columns) head.append(el('span', 'col', c));
