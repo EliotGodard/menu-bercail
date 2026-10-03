@@ -9,8 +9,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* One page per screen: native scrolling is off, the script below pages
+       between sheets with an animated scroll. */
+    html { overflow: hidden; }
     body { background: #f1ea97; }
-    /* Full-width band behind each page, in that page's border colour */
+    /* Full-screen band behind each page, in that page's border colour */
+    .sheet {
+      height: 100vh; height: 100dvh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
     .sheet.boissons { background: #f1ea97; }
     .sheet.nourriture { background: #f9b3d2; }
 
@@ -18,9 +26,10 @@
        --u is one PDF point, so every position below is in PDF points. */
     .page {
       position: relative;
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
+      /* As tall as the screen, unless that would be wider than the screen */
+      width: min(100vw, 100vh * 595.28 / 841.89);
+      width: min(100vw, 100dvh * 595.28 / 841.89);
+      flex: none;
       aspect-ratio: 595.28 / 841.89;
       container-type: inline-size;
       background-size: 100% 100%;
@@ -204,6 +213,75 @@
         return document.fonts.ready;
       })
       .then(() => document.querySelectorAll('.label').forEach(fit));
+
+    // Paging: any scroll gesture animates all the way to the next/previous page.
+    const sheets = [...document.querySelectorAll('.sheet')];
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DURATION = 750;
+    let current = 0;
+    let animating = false;
+    let lockedUntil = 0;  // swallows trackpad inertia after a page change
+
+    const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const goTo = (index) => {
+      index = Math.max(0, Math.min(sheets.length - 1, index));
+      if (index === current) return;
+      current = index;
+      const from = window.scrollY;
+      const to = sheets[index].offsetTop;
+      if (reduceMotion) { window.scrollTo(0, to); return; }
+      animating = true;
+      const start = performance.now();
+      const step = (now) => {
+        const t = Math.min(1, (now - start) / DURATION);
+        window.scrollTo(0, from + (to - from) * ease(t));
+        if (t < 1) requestAnimationFrame(step);
+        else { animating = false; lockedUntil = performance.now() + 150; }
+      };
+      requestAnimationFrame(step);
+    };
+
+    const busy = () => animating || performance.now() < lockedUntil;
+
+    addEventListener('wheel', (e) => {
+      if (e.ctrlKey) return;  // pinch-zoom on trackpads
+      e.preventDefault();
+      if (busy()) { if (!animating) lockedUntil = performance.now() + 150; return; }
+      if (Math.abs(e.deltaY) < 4) return;
+      goTo(current + Math.sign(e.deltaY));
+    }, { passive: false });
+
+    addEventListener('keydown', (e) => {
+      const next = ['ArrowDown', 'PageDown', 'ArrowRight'].includes(e.key) || (e.key === ' ' && !e.shiftKey);
+      const prev = ['ArrowUp', 'PageUp', 'ArrowLeft'].includes(e.key) || (e.key === ' ' && e.shiftKey);
+      if (e.key === 'Home') goTo(0);
+      else if (e.key === 'End') goTo(sheets.length - 1);
+      else if (next) goTo(current + 1);
+      else if (prev) goTo(current - 1);
+      else return;
+      e.preventDefault();
+    });
+
+    // Touch: one-finger swipes page; leave pinch-zoom and zoomed-in panning alone.
+    const zoomed = () => window.visualViewport && visualViewport.scale > 1.01;
+    let touchY = null;
+    addEventListener('touchstart', (e) => {
+      touchY = e.touches.length === 1 && !zoomed() ? e.touches[0].clientY : null;
+    }, { passive: true });
+    addEventListener('touchmove', (e) => {
+      if (touchY !== null && e.touches.length === 1) e.preventDefault();
+    }, { passive: false });
+    addEventListener('touchend', (e) => {
+      if (touchY === null) return;
+      const dy = touchY - e.changedTouches[0].clientY;
+      touchY = null;
+      if (Math.abs(dy) > 40 && !busy()) goTo(current + Math.sign(dy));
+    });
+
+    // Keep the current page aligned when the screen size changes.
+    history.scrollRestoration = 'manual';
+    addEventListener('resize', () => { if (!animating) window.scrollTo(0, sheets[current].offsetTop); });
   </script>
 </body>
 </html>
