@@ -1,0 +1,110 @@
+{
+  "bieres": {
+    "title": "Bières et cidres",
+    "columns": ["25cl", "50cl", "Pichet (1.75L)"],
+    "items": [
+      { "name": "Blonde - WINCH 5°", "prices": ["3€", "6€", "18€"] },
+      { "name": "Blanche - JADE 4,5°", "prices": ["3,50€", "7€", "22€"] },
+      { "name": "IPA - TROPICAL BLAST 6°", "prices": ["4€", "8€", "24€"] },
+      { "name": "Ambrée - SPERED 5,5°", "prices": ["4€", "8€", "24€"] },
+      { "name": "Bière du moment", "prices": ["4€", "8€", "24€"] },
+      { "name": "Bière blonde 0.0% - JADE (33cl)", "prices": ["4€"] },
+      { "name": "Bière IPA 0.3% - PINK SUN (33cl)", "prices": ["4€"] },
+      { "name": "Cidre Rosé (33cl)", "prices": ["4€"] }
+    ]
+  },
+
+  "sans-alcool": {
+    "title": "Sans alcool",
+    "items": [
+      { "name": "Sodas (33cl)", "prices": ["3,50€"],
+        "details": ["Coca Cola / Coca Cola Zéro / Ice Tea / Orangina / Oasis"] },
+      { "name": "Limonade artisanale (33cl)", "prices": ["4,50€"] },
+      { "name": "Infusions pétillantes naturelles bio (33cl)", "prices": ["4,50€"],
+        "details": ["Cassis truculent", "Rhubarbe pimpante", "Verveine, cerise", "Thym, citron"] },
+      { "name": "Badoit (33cl)", "prices": ["2,50€"] },
+      { "name": "Jus de fruit (25cl)", "prices": ["3,50€"],
+        "details": ["Ananas", "Multi-fruit", { "name": "Jus de pomme (Les Vergers du Galichet)", "prices": ["2€"] }] },
+      { "name": "Diabolo (25cl)", "prices": ["2,50€"] },
+      { "name": "Sirop à l’eau (25cl)", "prices": ["2€"],
+        "details": ["Pêche / Citron / Grenadine / Menthe / Fraise"] },
+      { "name": "Supplément sirop", "prices": ["0,30€"] }
+    ]
+  },
+
+  "cafes": {
+    "title": "Cafés",
+    "items": [
+      { "name": "Expresso", "prices": ["1,60€"] },
+      { "name": "Allongé", "prices": ["2€"] },
+      { "name": "Thé / Infusion", "prices": ["2,50€"] },
+      { "name": "Latte froid", "prices": ["3,70€"] }
+    ]
+  },
+
+  "vins": {
+    "title": "Vins",
+    "items": [
+      { "name": "Muscadet", "note": "Domaine Chatellier", "prices": ["3,50€", "16€"] },
+      { "name": "Chardonnay", "prices": ["3,50€", "16€"] },
+      { "name": "Blanc", "note": "- Je donne ma langue au chat", "prices": ["4€", "18€"] },
+      { "name": "Rosé", "prices": ["3,50€", "16€"] },
+      { "name": "Rouge", "note": "Chamasutra", "prices": ["4€", "18€"] },
+      { "name": "Rouge", "note": "Minervois", "prices": ["4,50€", "20€"] }
+    ]
+  },
+
+  "cocktails": {
+    "title": "Cocktails et Mocktails",
+    "items": [
+      { "name": "Spritz", "prices": ["7€"] },
+      { "name": "Spritz 0.0%", "prices": ["5€"] },
+      { "name": "Cocktail du moment", "prices": ["7€"] },
+      { "name": "Mocktail du moment", "prices": ["6€"] },
+      { "name": "Suze (6cl)", "prices": ["2,80€"] },
+      { "name": "Suze Tonic", "prices": ["4€"] }
+    ]
+  },
+
+  "petit-creux": {
+    "title": "Un petit creux ?",
+    "items": [
+      { "name": "Planche mixte", "prices": ["16€"] },
+      { "name": "Tartinade", "prices": ["7€"],
+        "details": [
+          "n°16 - Délice poivron & mascarpone",
+          "n°15 - Délice courgette, chèvre, basilic",
+          "n°13 - Délice de tomates confites, thon",
+          "n°42 - Dip de butternut, miel, citron, amandes"
+        ] },
+      { "name": "Saucisson", "prices": ["5€"],
+        "details": ["Fuet / Olives / Tandoori / Beaufort"] }
+    ]
+  },
+
+  "pizzas": {
+    "title": "Pizzas",
+    "items": [
+      { "name": "Regina", "prices": ["10€"] },
+      { "name": "Kebab", "prices": ["12€"] },
+      { "name": "Chèvre miel", "prices": ["12€"] },
+      { "name": "Poulet curry", "prices": ["12€"] }
+    ]
+  },
+
+  "glaces": {
+    "title": "Glaces artisanales",
+    "items": [
+      { "name": "Pots (70g)", "prices": ["3,30€"],
+        "details": ["Fraise", "Vanille", "Caramel", "Chocolat"] }
+    ],
+    "footnote": "Glaces artisanales de la ferme Coeur de Vendée aux Herbiers"
+  },
+
+  "infos": {
+    "tagline": ["Le Bercail,", "entre amis,", "en famille", "ou par hasard,", "on s’y retrouve"],
+    "callout": ["COMMANDE ET", "SERVICE AU BAR"],
+    "social": ["Suivez-nous", "sur les réseaux !"],
+    "handle": "@guinguettelebercail"
+  }
+}

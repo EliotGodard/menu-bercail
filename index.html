@@ -4,18 +4,206 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Le Bercail - Menu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #1a1a1a; }
-    img {
-      display: block;
+    body { background: #f1ea97; }
+    /* Full-width band behind each page, in that page's border colour */
+    .sheet.boissons { background: #f1ea97; }
+    .sheet.nourriture { background: #f9b3d2; }
+
+    /* Each page reproduces the A4 PDF page (595.28 × 841.89 pt).
+       --u is one PDF point, so every position below is in PDF points. */
+    .page {
+      position: relative;
       width: 100%;
       max-width: 800px;
       margin: 0 auto;
+      aspect-ratio: 595.28 / 841.89;
+      container-type: inline-size;
+      background-size: 100% 100%;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-optical-sizing: none;
+      font-variation-settings: 'opsz' 12;
+      overflow: hidden;
     }
+    /* --u is resolved inside the page (cqw refers to the page container there),
+       so sizes are set on descendants, never on .page itself. */
+    .page { --u: calc(100cqw / 595.28); }
+    .section { font-size: calc(var(--u) * 12); }
+    .page.boissons { background-image: url(/assets/page-1.svg); color: #f1ea97; }
+    .page.nourriture { background-image: url(/assets/page-2.svg); color: #f9b3d2; }
+
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+
+    /* A section is positioned on the artwork; its rows then flow normally. */
+    .section {
+      position: absolute;
+      left: calc(var(--u) * var(--x));
+      top: calc(var(--u) * var(--y));
+      --row-gap: 2.85;
+      --line: 14.4;
+      --indent: 12;
+      --leader-gap: 8;
+    }
+    .row, .detail, .head {
+      display: grid;
+      grid-template-columns: calc(var(--u) * var(--label)) var(--cols);
+      align-items: baseline;
+      line-height: calc(var(--u) * var(--line));
+      white-space: nowrap;
+    }
+    .row, .head { margin-top: calc(var(--u) * var(--row-gap)); }
+    .row:first-child, .head:first-child { margin-top: 0; }
+    .label { display: flex; align-items: baseline; min-width: 0; }
+    .name { font-weight: 700; }
+    .note { font-weight: 500; margin-left: 0.3em; }
+    .detail { font-weight: 400; }
+    .detail .label { padding-left: calc(var(--u) * var(--indent)); }
+    .leader {
+      flex: 1;
+      min-width: calc(var(--u) * 6);
+      height: calc(var(--u) * 1.2);
+      margin: 0 calc(var(--u) * var(--leader-gap)) 0 calc(var(--u) * 4);
+      background-image: radial-gradient(circle, currentColor 45%, transparent 50%);
+      background-size: calc(var(--u) * 3.03) calc(var(--u) * 1.2);
+      background-repeat: repeat-x;
+    }
+    .price { font-weight: 400; }
+    .col { font-weight: 700; }
+
+    /* Positions and column widths, in PDF points */
+    #bieres       { --x: 74.8;  --y: 94;    --label: 219.2; --cols: calc(var(--u) * 45.5) calc(var(--u) * 40.1) auto; --row-gap: 1.45; --leader-gap: 11; }
+    #bieres .row { font-size: calc(var(--u) * 11); }
+    #bieres .name { font-weight: 400; }
+    #bieres .head { margin-bottom: calc(var(--u) * 2.6); }
+    #sans-alcool  { --x: 62.4;  --y: 301.3; --label: 262.6; --cols: auto; --indent: 11.3; }
+    #cafes        { --x: 388.4; --y: 298.8; --label: 99;    --cols: auto; --leader-gap: 6; }
+    #vins         { --x: 62.4;  --y: 657.5; --label: 184.6; --cols: calc(var(--u) * 44.9) auto; }
+    #cocktails    { --x: 351.6; --y: 650.8; --label: 149;   --cols: auto; --row-gap: 0.45; }
+    #petit-creux  { --x: 99.6;  --y: 171.5; --label: 268.9; --cols: auto; --indent: 13.3; }
+    #pizzas       { --x: 99.6;  --y: 411;   --label: 162.1; --cols: auto; }
+    #glaces       { --x: 99.6;  --y: 587.5; --label: 162.1; --cols: auto; --indent: 15; }
+    #glaces .footnote {
+      margin: calc(var(--u) * 13) 0 0 calc(var(--u) * 12.6);
+      width: calc(var(--u) * 160); white-space: normal;
+      font-size: calc(var(--u) * 10); font-weight: 700; line-height: calc(var(--u) * 12);
+    }
+
+    /* Side panel on the food page */
+    #infos { position: absolute; inset: 0; color: #db2245; font-weight: 700; }
+    #infos > * { position: absolute; }
+    #infos .tagline { left: calc(var(--u) * 377.6); top: calc(var(--u) * 372.5); font-size: calc(var(--u) * 14.2); line-height: calc(var(--u) * 13); }
+    #infos .callout {
+      left: calc(var(--u) * 352); width: calc(var(--u) * 164); top: calc(var(--u) * 458.6);
+      text-align: center; color: #f9b3d2; font-size: calc(var(--u) * 15.6); line-height: calc(var(--u) * 14.5);
+      transform: rotate(-2.75deg);
+    }
+    #infos .social { left: calc(var(--u) * 357); width: calc(var(--u) * 162); top: calc(var(--u) * 503); text-align: center; font-size: calc(var(--u) * 14.2); line-height: calc(var(--u) * 13); }
+    #infos .handle { left: calc(var(--u) * 357); width: calc(var(--u) * 160); top: calc(var(--u) * 554); text-align: center; color: #f9b3d2; font-size: calc(var(--u) * 11); line-height: calc(var(--u) * 12); }
   </style>
 </head>
 <body>
-  <img src="/menu-page-1.png" alt="Le Bercail - Pour cette dernière soirée, retrouvez notre carte au bar. Profitez bien et à la saison prochaine !">
+  <h1 class="visually-hidden">Le Bercail - Menu</h1>
+
+  <main>
+    <div class="sheet boissons">
+    <section class="page boissons" aria-label="Boissons">
+      <div class="section" id="bieres"></div>
+      <div class="section" id="sans-alcool"></div>
+      <div class="section" id="cafes"></div>
+      <div class="section" id="vins"></div>
+      <div class="section" id="cocktails"></div>
+    </section>
+    </div>
+
+    <div class="sheet nourriture">
+    <section class="page nourriture" aria-label="À manger">
+      <div class="section" id="petit-creux"></div>
+      <div class="section" id="pizzas"></div>
+      <div class="section" id="glaces"></div>
+      <div id="infos"></div>
+    </section>
+    </div>
+  </main>
+
+  <script>
+    // All menu content lives in menu.json; this only places it on the artwork.
+    const el = (tag, cls, text) => {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text != null) node.textContent = text;
+      return node;
+    };
+
+    const line = (cls, item) => {
+      const row = el('div', cls);
+      const label = el('span', 'label');
+      label.append(el('span', cls === 'row' ? 'name' : 'text', item.name));
+      if (item.note) label.append(el('span', 'note', item.note));
+      if (item.prices && item.prices.length) label.append(el('span', 'leader'));
+      row.append(label);
+      for (const price of item.prices || []) row.append(el('span', 'price', price));
+      return row;
+    };
+
+    const renderSection = (id, data) => {
+      const box = document.getElementById(id);
+      if (!box) return;
+      box.append(el('h2', 'visually-hidden', data.title));
+      if (data.columns) {
+        const head = el('div', 'head');
+        head.append(el('span'));
+        for (const c of data.columns) head.append(el('span', 'col', c));
+        box.append(head);
+      }
+      for (const item of data.items) {
+        box.append(line('row', item));
+        for (const d of item.details || []) {
+          box.append(line('detail', typeof d === 'string' ? { name: d } : d));
+        }
+      }
+      if (data.footnote) box.append(el('p', 'footnote', data.footnote));
+    };
+
+    const lines = (cls, arr) => {
+      const p = el('p', cls);
+      arr.forEach((t, i) => { if (i) p.append(el('br')); p.append(t); });
+      return p;
+    };
+
+    const renderInfos = (data) => {
+      const box = document.getElementById('infos');
+      box.append(lines('tagline', data.tagline), lines('callout', data.callout),
+                 lines('social', data.social), el('p', 'handle', data.handle));
+    };
+
+    // Shrink a line's note (or its name) until it fits before the price column,
+    // like the PDF does for long entries.
+    const fit = (label) => {
+      const target = label.querySelector('.note') || label.firstChild;
+      const last = label.lastChild;
+      const overflows = () => last.getBoundingClientRect().right
+        + parseFloat(getComputedStyle(last).marginRight) > label.getBoundingClientRect().right + 0.5;
+      for (let size = 100; overflows() && size > 60; size -= 2) {
+        target.style.fontSize = size + '%';
+      }
+    };
+
+    Promise.all([fetch('/menu.json', { cache: 'no-cache' }).then(r => r.json()), document.fonts.ready])
+      .then(([menu]) => {
+        for (const [id, data] of Object.entries(menu)) {
+          if (id === 'infos') renderInfos(data);
+          else renderSection(id, data);
+        }
+        return document.fonts.ready;
+      })
+      .then(() => document.querySelectorAll('.label').forEach(fit));
+  </script>
 </body>
 </html>
